@@ -1,36 +1,32 @@
 package org.example.model.oven;
 
+import org.example.enums.Flavour;
 import org.example.model.cake.Cake;
-import org.example.model.cake.ChimneyCake;
 import org.example.model.cake.Pancake;
 
-public class PancakeOven implements Oven {
+public class PancakeOven extends Oven {
     private boolean hasOil;
 
     public PancakeOven() {
+        super("pancake");
         this.hasOil = false;
     }
 
     public void refillOil() {
         hasOil = true;
-        System.out.println("Added oil to pancake's Oven");
     }
 
     @Override
-    public boolean canBake(Cake cake) {
-        return hasOil && !cake.isBaked();
+    public boolean canBake() {
+        return hasOil;
     }
 
     @Override
-    public Pancake bake(Cake cake) {
-        if (!canBake(cake) || !(cake instanceof Pancake)) {
-            System.out.println("This oven can bake only pancakes if the oven has oil available!");
+    public Cake bake(Flavour flavour) {
+        if (!canBake()) {
             return null;
         }
-
         hasOil = false;
-        cake.setBaked(true);
-        System.out.println("A pancake was baked.");
-        return (Pancake) cake;
+        return new Pancake(flavour);
     }
 }

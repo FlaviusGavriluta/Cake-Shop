@@ -1,38 +1,41 @@
 package org.example;
 
+import org.example.enums.Flavour;
 import org.example.model.cake.Cake;
+import org.example.model.oven.ChimneyCakeOven;
 import org.example.model.oven.Oven;
+import org.example.model.oven.PancakeOven;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class CakeShop {
     private List<Oven> ovens;
-    private List<Cake> soldCakes;
     private double income;
 
     public CakeShop() {
-        this.ovens = new ArrayList<>();
-        this.soldCakes = new ArrayList<>();
-        this.income = 0;
+        this.ovens = List.of(new PancakeOven(), new ChimneyCakeOven());
+        this.income = 0.0;
     }
 
-    public void addOven(Oven oven) {
-        ovens.add(oven);
+    public List<Oven> getOvens() {
+        return ovens;
     }
 
-    public void sellCakes(Cake cake) {
-        if (cake.isBaked()) {
-            if (!soldCakes.contains(cake)) {
-                soldCakes.add(cake);
-                System.out.println("Sold a cake for " + cake.calculatePrice() + "$");
-            }
-        } else System.out.println("The cake must be baked.");
+    public void sellCakes(String cakeType, Flavour flavour) {
+        Oven oven = ovens.stream()
+                .filter(o -> o.getCakeType().equals(cakeType.toLowerCase()))
+                .findFirst()
+                .orElse(null);
+
+        if (oven instanceof PancakeOven)
+            ((PancakeOven) oven).refillOil();
+
+        Cake cake = oven.bake(flavour);
+        income += cake.calculatePrice();
+        System.out.println("Sold a " + cake);
     }
 
     public double totalIncome() {
-        return (soldCakes.stream()
-                .mapToDouble(Cake::calculatePrice)
-                .sum());
+        return income;
     }
 }

@@ -1,23 +1,22 @@
 package org.example.model.oven;
 
+import org.example.enums.Flavour;
 import org.example.model.cake.Cake;
 import org.example.model.cake.ChimneyCake;
 
-public class ChimneyCakeOven implements Oven {
-
-    @Override
-    public boolean canBake(Cake cake) {
-        return !cake.isBaked();
+public class ChimneyCakeOven extends Oven {
+    public ChimneyCakeOven() {
+        super("chimneycake");
     }
-
     @Override
-    public ChimneyCake bake(Cake cake) {
-        if (!canBake(cake) || !(cake instanceof ChimneyCake)) {
-            System.out.println("This oven can bake only chemney cakes!");
+    public boolean canBake() {
+        return true;
+    }
+    @Override
+    public Cake bake(Flavour flavour) {
+        if (!canBake()) {
             return null;
         }
-        cake.setBaked(true);
-        System.out.println("A chimneyCake was baked.");
-        return (ChimneyCake) cake;
+        return new ChimneyCake(flavour);
     }
 }
